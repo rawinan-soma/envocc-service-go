@@ -3,6 +3,7 @@ package server
 import (
 	"envocc-service-go/config"
 	"envocc-service-go/database"
+	"envocc-service-go/src/users"
 	"fmt"
 
 	"github.com/labstack/echo/v4"
@@ -30,6 +31,9 @@ func (e *echoServer) Start() {
 	e.app.Use(middleware.Recover())
 	e.app.Use(middleware.AddTrailingSlash())
 	e.app.Use(middleware.Logger())
+
+	v2 := e.app.Group("envocc-service/api")
+	users.Wire(v2, e.db)
 
 	serverUrl := fmt.Sprintf(":%d", e.conf.Server.Port)
 	e.app.Logger.Fatal(e.app.Start(serverUrl))
