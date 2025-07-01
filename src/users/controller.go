@@ -20,16 +20,16 @@ func (c *userController) GetAllUserHandler(ctx echo.Context) error {
 	users, err := c.service.GetAllUsers()
 
 	if err != nil {
-		return ctx.JSON(echo.ErrInternalServerError.Code, echo.Map{
-			"msg":   echo.ErrInternalServerError.Message,
+		return ctx.JSON(500, echo.Map{
 			"error": err.Error(),
+			"msg":   "something went wrong",
 		})
 	}
 
-	var response []UserResponse
-	for _, user := range users {
-		response = append(response, toUserResponse(&user))
-	}
+	// var response []UserResponse
+	// for _, user := range users {
+	// 	response = append(response, toUserResponse(&user))
+	// }
 
-	return ctx.JSON(http.StatusOK, response)
+	return ctx.JSON(http.StatusOK, users)
 }
