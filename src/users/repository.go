@@ -11,6 +11,7 @@ type UserRepository interface {
 	FindAll() ([]entities.User, error)
 	FindByUsernameOrEmail(username string, email string) (*entities.User, error)
 	SaveUser(user *entities.User) error
+	FindByUsername(username string) (*entities.User, error)
 }
 
 type userRepository struct {
@@ -37,4 +38,11 @@ func (r userRepository) FindByUsernameOrEmail(username string, email string) (*e
 
 func (r userRepository) SaveUser(user *entities.User) error {
 	return r.db.Create(user).Error
+}
+
+func (r *userRepository) FindByUsername(username string) (*entities.User, error) {
+	var user entities.User
+	err := r.db.Where("username = ?", username).First(&user).Error
+
+	return &user, err
 }

@@ -11,6 +11,7 @@ type (
 	Config struct {
 		Server   *Server
 		Database *Database
+		Jwt      *Jwt
 	}
 
 	Server struct {
@@ -19,11 +20,18 @@ type (
 
 	Database struct {
 		Host     string
-		Port     int
+		Port     uint16
 		User     string
 		Password string
 		DBName   string
 		TimeZone string
+	}
+
+	Jwt struct {
+		access      string
+		refresh     string
+		access_exp  uint8
+		refresh_exp uint16
 	}
 )
 

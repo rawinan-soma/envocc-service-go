@@ -7,3 +7,8 @@ database:
   password: root
   dbname: envocc_services
   timezone: Asia/Bangkok
+jwt:
+  access: aassddff
+  refresh: zzxxccvv
+  access_exp: 300
+  refresh_exp: 3600

@@ -9,7 +9,7 @@ import (
 )
 
 type AuthenService interface {
-	Register(dto users.UserCreate) error
+	CreateUser(dto users.UserCreate) error
 }
 
 type authenService struct {
@@ -22,7 +22,9 @@ func NewAuthenService(repository users.UserRepository) AuthenService {
 	}
 }
 
-func (s authenService) Register(dto users.UserCreate) error {
+var ErrExistingUser = errors.New("username or email already exists")
+
+func (s authenService) CreateUser(dto users.UserCreate) error {
 	hasedPassword, err := bcrypt.GenerateFromPassword([]byte(dto.Password), 10)
 	if err != nil {
 		return err
@@ -35,11 +37,15 @@ func (s authenService) Register(dto users.UserCreate) error {
 	}
 
 	if user != nil {
-		return gorm.ErrDuplicatedKey
+		return ErrExistingUser
 	}
 
 	dto.Password = string(hasedPassword)
 	newUser := users.ToUserEntity(dto)
 
 	return s.repository.SaveUser(newUser)
+}
+
+func (s *authenService) GetAuthenticatedUser(username string, password string) {
+
 }
