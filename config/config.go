@@ -28,10 +28,10 @@ type (
 	}
 
 	Jwt struct {
-		access      string
-		refresh     string
-		access_exp  uint8
-		refresh_exp uint16
+		Access      string
+		Refresh     string
+		Access_exp  uint8
+		Refresh_exp uint16
 	}
 )
 

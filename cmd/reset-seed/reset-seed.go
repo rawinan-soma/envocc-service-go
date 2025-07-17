@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -151,10 +152,11 @@ func seedTables(db *gorm.DB) error {
 	}
 	fmt.Println("Rooms seeded")
 	// Seed User
+	password, _ := bcrypt.GenerateFromPassword([]byte("1234"), 10)
 	user := entities.User{
 		ID:              1,
 		Username:        "test",
-		Password:        "$2a$10$jH.LBbrJyelezFxLvKaEXuEKp.WEiYz/.h.VwabMrmiN3HKQffun2",
+		Password:        string(password),
 		Email:           "test@mail.com",
 		Prefix:          "นาย",
 		FnameTH:         "ทดสอบ",

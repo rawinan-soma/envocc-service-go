@@ -12,6 +12,8 @@ type UserRepository interface {
 	FindByUsernameOrEmail(username string, email string) (*entities.User, error)
 	SaveUser(user *entities.User) error
 	FindByUsername(username string) (*entities.User, error)
+	UpdateToken(token string, userID uint16) error
+	FindByID(userID uint16) (*entities.User, error)
 }
 
 type userRepository struct {
@@ -24,25 +26,39 @@ func NewUserRepository(db database.Database) UserRepository {
 	}
 }
 
-func (r userRepository) FindAll() ([]entities.User, error) {
+func (r *userRepository) FindAll() ([]entities.User, error) {
 	var users []entities.User
 	return users, r.db.Preload("Group").Preload("Position").Preload("PositionLevel").Find(&users).Error
 }
 
-func (r userRepository) FindByUsernameOrEmail(username string, email string) (*entities.User, error) {
+func (r *userRepository) FindByUsernameOrEmail(username string, email string) (*entities.User, error) {
 	var user entities.User
 	err := r.db.Where("username = ?", username).Or("email = ?", email).First(&user).Error
 
 	return &user, err
 }
 
-func (r userRepository) SaveUser(user *entities.User) error {
+func (r *userRepository) SaveUser(user *entities.User) error {
 	return r.db.Create(user).Error
 }
 
 func (r *userRepository) FindByUsername(username string) (*entities.User, error) {
 	var user entities.User
 	err := r.db.Where("username = ?", username).First(&user).Error
+
+	return &user, err
+
+}
+
+func (r *userRepository) UpdateToken(token string, userID uint16) error {
+	err := r.db.Model(&entities.User{}).Where("id = ?", userID).Update("hashedRefreshToken = ", token).Error
+
+	return err
+}
+
+func (r *userRepository) FindByID(userID uint16) (*entities.User, error) {
+	var user entities.User
+	err := r.db.Where("id = ?", userID).Find(&user).Error
 
 	return &user, err
 }
