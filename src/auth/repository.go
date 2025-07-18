@@ -45,7 +45,7 @@ func (r *authenRepository) FindByUsername(username string) (*entities.User, erro
 }
 
 func (r *authenRepository) UpdateToken(token string, userID uint16) error {
-	err := r.db.Model(&entities.User{}).Where("id = ?", userID).Update("hashedRefreshToken = ", token).Error
+	err := r.db.Model(&entities.User{}).Where("id = ?", userID).Update("refreshToken", token).Error
 
 	return err
 }

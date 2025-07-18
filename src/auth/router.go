@@ -14,4 +14,6 @@ func Wire(group *echo.Group, db database.Database, mw AuthMiddlewareContainer) {
 
 	authGroup := group.Group("/auth")
 	authGroup.POST("/login", controller.LoginHandler, mw.Local)
+	authGroup.POST("/logout", controller.LogoutHandler, mw.JwtAccess)
+	authGroup.POST("/refresh", controller.RefreshTokenHandler, mw.JwtRefresh)
 }

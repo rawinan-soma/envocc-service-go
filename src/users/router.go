@@ -14,5 +14,7 @@ func Wire(group *echo.Group, db database.Database, mw auth.AuthMiddlewareContain
 
 	userGroup := group.Group("/users")
 	userGroup.GET("", controller.GetAllUserHandler)
-	userGroup.GET("/protect", func(c echo.Context) error { return c.JSON(200, echo.Map{"msg": "protected"}) }, mw.JwtAccess)
+	userGroup.GET("/protect", func(c echo.Context) error {
+		return c.JSON(200, echo.Map{"msg": "test protected path"})
+	}, mw.JwtAccess)
 }

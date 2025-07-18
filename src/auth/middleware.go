@@ -55,9 +55,9 @@ func JwtAccessMiddleware(service AuthenService) echo.MiddlewareFunc {
 			}
 
 			user.Password = ""
-			user.HashedRefreshToken = nil
+			user.RefreshToken = nil
 
-			c.Set("user", &user)
+			c.Set("user", user)
 			return next(c)
 		}
 	}
@@ -80,7 +80,7 @@ func JwtRefreshMiddleware(service AuthenService) echo.MiddlewareFunc {
 			if err != nil {
 				return c.JSON(401, echo.Map{"msg": "invalid token"})
 			}
-			c.Set("user", &user)
+			c.Set("user", user)
 			return next(c)
 		}
 	}

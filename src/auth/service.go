@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"crypto/subtle"
 	"envocc-service-go/config"
 	"envocc-service-go/entities"
 
@@ -155,12 +156,8 @@ func (s *authenService) GetCookieWithRefreshToken(userID uint16) (*http.Cookie, 
 }
 
 func (s *authenService) SetCurrentRefreshToken(refreshToken string, userID uint16) error {
-	hashedRefreshToken, err := bcrypt.GenerateFromPassword([]byte(refreshToken), 10)
-	if err != nil {
-		return err
-	}
 
-	if err := s.repository.UpdateToken(string(hashedRefreshToken), userID); err != nil {
+	if err := s.repository.UpdateToken(string(refreshToken), userID); err != nil {
 		return err
 	}
 
@@ -173,7 +170,7 @@ func (s *authenService) GetUserFromRefreshToken(refreshToken string, userID uint
 		return nil, ErrInvalidCredential
 	}
 
-	if user.HashedRefreshToken == nil {
+	if user.RefreshToken == nil {
 		return nil, ErrInvalidToken
 	}
 
@@ -181,12 +178,12 @@ func (s *authenService) GetUserFromRefreshToken(refreshToken string, userID uint
 		return nil, err
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(*user.HashedRefreshToken), []byte(refreshToken)); err != nil {
+	if subtle.ConstantTimeCompare([]byte(refreshToken), []byte(*user.RefreshToken)) != 1 {
 		return nil, ErrInvalidToken
 	}
 
 	user.Password = ""
-	user.HashedRefreshToken = nil
+	user.RefreshToken = nil
 
 	return user, nil
 }
