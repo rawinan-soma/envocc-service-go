@@ -1,33 +1,76 @@
 services:
   database:
-    image: postgres:17-alpine
     container_name: envocc-services-db
+    image: postgres:17-alpine
     restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=envocc_services
-    ports:
-      - 5432:5432
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - POSTGRES_USER=postgres
+    networks:
+      - envocc-service
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test:
+        - CMD-SHELL
+        - pg_isready -U postgres -d envocc_services
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 5s
+      start_period: 10s
+  migrator:
+    container_name: envocc-migrator
+    image: rawinan/envocc-service:test
+    restart: 'no'
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      - DB_HOST=database
+      - DB_USER=postgres
+      - DB_PASSWORD=root
+      - DB_NAME=envocc_services
+      - DB_PORT=5432
+      - DB_TIMEZONE=Asia/Bangkok
     networks:
       - envocc-service
+    command:
+      - ./cmd/reset-seed/reset-seed
   api:
-    image: rawinan/envocc_service:test
-    ports:
-      - "3600:3600"
+    container_name: envocc-api
+    image: rawinan/envocc-service:test
     restart: unless-stopped
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+    ports:
+      - '3600:3600'
+    environment:
+      - DB_HOST=database
+      - DB_USER=postgres
+      - DB_PASSWORD=root
+      - DB_NAME=envocc_services
+      - DB_PORT=5432
+      - DB_TIMEZONE=Asia/Bangkok
     networks:
-      - envocc_service
+      - envocc-service
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - http://localhost:3600/envocc-service/api/healthcheck
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 volumes:
-  postgres_data:
+  postgres_data: null
+
 networks:
   envocc-service:
     driver: bridge

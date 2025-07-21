@@ -39,6 +39,9 @@ func (e *echoServer) Start() {
 	e.app.Use(middleware.Logger())
 
 	v2 := e.app.Group("envocc-service/api")
+	v2.GET("/healthcheck", func(ctx echo.Context) error {
+		return ctx.String(200, "Good day")
+	})
 	users.Wire(v2, e.db, *e.mw)
 	auth.Wire(v2, e.db, *e.mw)
 
