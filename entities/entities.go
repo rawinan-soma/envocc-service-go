@@ -57,27 +57,29 @@ type Room struct {
 }
 
 type RoomBooking struct {
-	ID            int16             `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UserID        int16             `json:"user_id"`
-	RoomID        int16             `json:"room_id"`
-	Title         string            `gorm:"column:meeting_title" json:"meeting_title" `
-	Attendees     int16             `json:"attendees"`
-	StartDatetime time.Time         `gorm:"column:start_datetime" json:"start_datetime"`
-	EndDatetime   time.Time         `gorm:"column:end_datetime" json:"end_datetime"`
-	NeedEquipment bool              `json:"need_equipment"`
-	Notes         string            `json:"notes"`
-	ConferenceReq ConferenceRequest `json:"conference_req"`
+	ID            int16              `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	UserID        int16              `json:"user_id"`
+	RoomID        int16              `json:"room_id"`
+	Title         string             `gorm:"column:meeting_title" json:"meeting_title" `
+	Attendees     int16              `json:"attendees"`
+	StartDatetime time.Time          `gorm:"column:start_datetime" json:"start_datetime"`
+	EndDatetime   time.Time          `gorm:"column:end_datetime" json:"end_datetime"`
+	NeedEquipment bool               `json:"need_equipment"`
+	Notes         *string            `json:"notes"`
+	ConferenceReq *ConferenceRequest `json:"conference_req" gorm:"foreignKey:RoomBookingID"`
 }
 
 type ConferenceRequest struct {
 	ID                 int16               `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	RoomBookingID      int16               `json:"room_booking_id"`
+	RoomBookingID      *int16              `json:"room_booking_id"`
 	UserID             int16               `json:"user_id"`
 	Title              string              `gorm:"column:meeting_title" json:"meeting_title"`
 	Password           string              `gorm:"column:meeting_password" json:"meeting_password"`
 	StartDatetime      time.Time           `json:"start_datetime"`
 	EndDatetime        time.Time           `json:"end_datetime"`
 	Equipment          string              `json:"equipment"`
+	Host               bool                `json:"host"`
+	ReqStatus          int8                `json:"request_status" gorm:"column:request_status;default:1"`
 	ConfApp            *string             `json:"conf_app"`
 	ConfUsername       *string             `json:"conf_username"`
 	ConferenceResponse *ConferenceResponse `json:"conference_response"`
