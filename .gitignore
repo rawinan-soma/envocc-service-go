@@ -1,0 +1,113 @@
+# Go Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go Test binary, built with `go test -c`
+*.test
+
+# Go Output of go build
+main
+app
+bin/
+dist/
+
+# Go dependency directories
+vendor/
+
+# Go module download cache
+go.sum
+
+# Go workspace file
+go.work
+go.work.sum
+
+# GoLand/IntelliJ
+.idea/
+
+# VS Code
+.vscode/
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Environment Variables
+.env
+.env.local
+.env.production
+config.json
+secrets/
+config.yaml
+
+# Logs
+*.log
+logs/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Coverage files
+coverage.txt
+coverage.html
+coverage.out
+*.cover
+
+# Profiling files
+*.prof
+*.pprof
+
+# Debug files
+debug
+*.dmp
+
+# Air (live reload tool)
+tmp/
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+
+# Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Documentation build
+docs/_build/
+
+# Docker
+.dockerignore
+Dockerfile.dev
+tmp/main
