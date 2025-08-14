@@ -111,3 +111,6 @@ docs/_build/
 .dockerignore
 Dockerfile.dev
 tmp/main
+
+
+*.code-workspace

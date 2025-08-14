@@ -4,6 +4,7 @@ import (
 	"envocc-service-go/config"
 	"envocc-service-go/database"
 	"envocc-service-go/src/auth"
+	"envocc-service-go/src/bookings"
 	"envocc-service-go/src/users"
 	"fmt"
 
@@ -22,8 +23,8 @@ type echoServer struct {
 func NewServer(conf *config.Config, db database.Database) Server {
 	app := echo.New()
 	app.Logger.SetLevel(log.DEBUG)
-	sharedUserrepository := users.NewUserRepository(db)
-	sharedAuthService := auth.NewAuthenService(sharedUserrepository, conf)
+	sharedAuthenrepository := auth.NewAuthenRepository(db)
+	sharedAuthService := auth.NewAuthenService(sharedAuthenrepository, conf)
 	mw := auth.NewMiddlewareConatiner(sharedAuthService)
 	return &echoServer{
 		app:  app,
@@ -40,7 +41,8 @@ func (e *echoServer) Start() {
 
 	v2 := e.app.Group("envocc-service/api")
 	users.Wire(v2, e.db, *e.mw)
-	auth.Wire(v2, e.db, *e.mw)
+	auth.Wire(v2, e.db, *e.mw, &e.conf)
+	bookings.Wire(v2, e.db, *e.mw)
 
 	serverUrl := fmt.Sprintf(":%d", e.conf.Server.Port)
 	e.app.Logger.Fatal(e.app.Start(serverUrl))

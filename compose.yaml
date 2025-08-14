@@ -18,13 +18,7 @@ services:
       start_period: 5s
     networks:
       - envocc-service
-  api:
-    image: rawinan/envocc_service:test
-    ports:
-      - "3600:3600"
-    restart: unless-stopped
-    networks:
-      - envocc_service
+
 
 volumes:
   postgres_data:

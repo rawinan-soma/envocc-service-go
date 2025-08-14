@@ -10,9 +10,7 @@ import (
 type UserRepository interface {
 	FindAll() ([]entities.User, error)
 	FindByUsernameOrEmail(username string, email string) (*entities.User, error)
-	SaveUser(user *entities.User) error
 	FindByUsername(username string) (*entities.User, error)
-	UpdateToken(token string, userID uint16) error
 	FindByID(userID uint16) (*entities.User, error)
 }
 
@@ -38,22 +36,12 @@ func (r *userRepository) FindByUsernameOrEmail(username string, email string) (*
 	return &user, err
 }
 
-func (r *userRepository) SaveUser(user *entities.User) error {
-	return r.db.Create(user).Error
-}
-
 func (r *userRepository) FindByUsername(username string) (*entities.User, error) {
 	var user entities.User
 	err := r.db.Where("username = ?", username).First(&user).Error
 
 	return &user, err
 
-}
-
-func (r *userRepository) UpdateToken(token string, userID uint16) error {
-	err := r.db.Model(&entities.User{}).Where("id = ?", userID).Update("hashedRefreshToken = ", token).Error
-
-	return err
 }
 
 func (r *userRepository) FindByID(userID uint16) (*entities.User, error) {

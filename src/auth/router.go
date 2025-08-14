@@ -7,9 +7,9 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Wire(group *echo.Group, db database.Database, mw AuthMiddlewareContainer) {
+func Wire(group *echo.Group, db database.Database, mw AuthMiddlewareContainer, conf *config.Config) {
 	repository := NewAuthenRepository(db)
-	service := NewAuthenService(repository, config.GetConfig())
+	service := NewAuthenService(repository, conf)
 	controller := NewAuthenController(service)
 
 	authGroup := group.Group("/auth")
